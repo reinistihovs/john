@@ -37,14 +37,14 @@ john_register_one(&fmt_pem);
 #include "params.h"
 #include "options.h"
 #include "pem_common.h"
-#include "pbkdf2_hmac_sha1.h"
+#include "pbkdf2_hmac_sha256.h"
 #include "jumbo.h"
 
 #define FORMAT_LABEL            "PEM"
 #ifdef SIMD_COEF_32
-#define ALGORITHM_NAME          "PBKDF2-SHA1 " SHA1_ALGORITHM_NAME " 3DES/AES"
+#define ALGORITHM_NAME          "PBKDF2-SHA256 " SHA256_ALGORITHM_NAME " 3DES/AES"
 #else
-#define ALGORITHM_NAME          "PBKDF2-SHA1 32/" ARCH_BITS_STR " 3DES/AES"
+#define ALGORITHM_NAME          "PBKDF2-SHA256 32/" ARCH_BITS_STR " 3DES/AES"
 #endif
 #define BENCHMARK_COMMENT       ""
 #define BENCHMARK_LENGTH        0x107
@@ -54,8 +54,8 @@ john_register_one(&fmt_pem);
 #define BINARY_ALIGN            1
 #define SALT_ALIGN              sizeof(int)
 #ifdef SIMD_COEF_32
-#define MIN_KEYS_PER_CRYPT      SSE_GROUP_SZ_SHA1
-#define MAX_KEYS_PER_CRYPT      (SSE_GROUP_SZ_SHA1 * 8)
+#define MIN_KEYS_PER_CRYPT      SSE_GROUP_SZ_SHA256
+#define MAX_KEYS_PER_CRYPT      (SSE_GROUP_SZ_SHA256 * 8)
 #else
 #define MIN_KEYS_PER_CRYPT      1
 #define MAX_KEYS_PER_CRYPT      64
@@ -116,9 +116,9 @@ static int crypt_all(int *pcount, struct db_salt *salt)
 			pin[i] = (unsigned char*)saved_key[index+i];
 			pout[i] = master[i];
 		}
-		pbkdf2_sha1_sse((const unsigned char**)pin, lens, cur_salt->salt, SALTLEN, cur_salt->iterations, pout, cur_salt->key_length, 0);
+		pbkdf2_sha256_sse((const unsigned char**)pin, lens, cur_salt->salt, SALTLEN, cur_salt->iterations, pout, cur_salt->key_length, 0);
 #else
-		pbkdf2_sha1((unsigned char *)saved_key[index],  strlen(saved_key[index]), cur_salt->salt, SALTLEN, cur_salt->iterations, master[0], cur_salt->key_length, 0);
+		pbkdf2_sha256((unsigned char *)saved_key[index],  strlen(saved_key[index]), cur_salt->salt, SALTLEN, cur_salt->iterations, master[0], cur_salt->key_length, 0);
 #endif
 		for (i = 0; i < MIN_KEYS_PER_CRYPT; ++i) {
 			if (pem_decrypt(master[i], cur_salt->iv, cur_salt->ciphertext, cur_salt) == 0)
