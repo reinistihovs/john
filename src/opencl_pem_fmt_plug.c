@@ -34,10 +34,10 @@ john_register_one(&fmt_opencl_pem);
 #include "opencl_common.h"
 #include "misc.h"
 #define MAX_OUTLEN 32
-#include "../run/opencl/opencl_pbkdf2_hmac_sha1.h"
+#include "../run/opencl/opencl_pbkdf2_hmac_sha256.h"
 
 #define FORMAT_LABEL            "pem-opencl"
-#define ALGORITHM_NAME          "PBKDF2-SHA1 3DES/AES OpenCL"
+#define ALGORITHM_NAME          "PBKDF2-SHA256 3DES/AES OpenCL"
 #define BENCHMARK_COMMENT       ""
 #define BENCHMARK_LENGTH        0x107
 #define MIN_KEYS_PER_CRYPT      1
